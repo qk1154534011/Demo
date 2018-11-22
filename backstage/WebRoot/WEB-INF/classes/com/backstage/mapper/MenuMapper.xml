@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.backstage.dao.IMenuMapper">
+
+	<!-- 按菜品类型查询所有菜品 -->
+	<resultMap type="Menu" id="bymenuType">
+		<id column="id" property="id" />
+		<result column="menuName" property="menuName" />
+		<result column="price" property="price" />
+		<result column="pic" property="pic" />
+		<association property="menuType" javaType="MenuType">
+			<result column="typeName" property="typeName" />
+		</association>
+	</resultMap>
+	<select id="byMenuType" resultMap="bymenuType">
+		SELECT m.id,t.typeName,m.menuName,m.price,m.pic FROM menu m,menutype t
+		WHERE m.typeId = t.typeId
+		<if test="typeName != null and typeName != ''">
+			and typeName = #{typeName}
+		</if>
+		
+	</select>
+	
+	<!-- 查询所有菜品类型 -->
+	<select id="listMenuType" resultType="MenuType">
+		SELECT typeId,typeName FROM menutype
+	</select>
+	
+	<!-- 登录 -->
+	<select id="byNameAndPwd" resultType="User">
+		SELECT id,`name`,phone,`password`,address FROM `user` WHERE `name`=#{name} AND `password`=#{password}
+	</select>
+	
+	<!-- 注册-->
+	<insert id="addUser" parameterType="User">
+		insert into user(`name`,`phone`,`password`,`address`) values(#{name},#{phone},#{password},#{address})
+	</insert>
+	
+	<!-- 按id查询该商品信息 -->
+	<select id="byId" resultMap="bymenuType">
+	SELECT m.id,t.typeName,m.menuName,m.price,m.pic FROM menu m,menutype t
+		WHERE m.typeId = t.typeId and m.id = #{id}
+	</select>
+</mapper>
+
+ 

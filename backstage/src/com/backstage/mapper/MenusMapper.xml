@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.backstage.dao.IMenusMapper">
+	<!-- 辅助 -->
+	<resultMap type="Menu" id="bymenuType">
+		<id column="id" property="id" />
+		<result column="menuName" property="menuName" />
+		<result column="price" property="price" />
+		<result column="pic" property="pic" />
+		<result column="disc" property="disc" />
+		<result column="showaddr" property="show" />
+		<association property="menuType" javaType="MenuType">
+			<result column="typeName" property="typeName" />
+		</association>
+	</resultMap>
+	<!-- 查询今日特价菜品 -->
+	<select id="lsitHotMenus" resultMap="bymenuType">
+		SELECT id,
+		typeId,
+		menuName,
+		price,
+		disc,
+		pic,
+		showaddr
+		FROM
+		menu
+		WHERE
+		showaddr = 1
+	</select>
+	<!-- 查询本店特色菜品 -->
+	<select id="lsitCarMenus" resultMap="bymenuType">
+		SELECT id,
+		typeId,
+		menuName,
+		price,
+		disc,
+		pic,
+		showaddr
+		FROM
+		menu
+		WHERE
+		showaddr = 3
+	</select>
+	<!-- 添加订单 -->
+	<insert id="addOrder">
+		INSERT INTO
+		`order`(`orderId`,`userName`,`orderTime`,`totalPrice`,`pay`)
+		VALUES(#{orderId},#{userName},#{orderTime},#{totalPrice},#{pay})
+	</insert>
+	<!-- 添加订单详情 -->
+	<insert id="addOrderDetails">
+		INSERT INTO
+		orderdetails(`orderId`,`menuName`,`menuNum`,`menuPrice`)
+		VALUES(#{orderId},#{menuName},#{menuNum},#{menuPrice})
+	</insert>
+	<!-- 查询订单 -->
+	<select id="selectOrder" resultType="Order">
+		 SELECT orderId,userName,orderTime,totalPrice,pay FROM `order` WHERE userName=#{userName} 
+	</select>
+	<!-- 查询订单详情 -->
+	<select id="selectOrderDetails" resultType="OrderDetails">
+		 SELECT orderId,menuName,menuNum,menuPrice FROM orderdetails WHERE orderId=#{orderId}
+	</select>
+</mapper>
